@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Reflection.PortableExecutable;
 
 class Receiver
 {
@@ -15,29 +16,15 @@ class Receiver
             StreamReader streamReader = new StreamReader(stream);
             writer.WriteLine("RECEIVER");
             writer.Flush();
-            string message = await streamReader.ReadLineAsync();
-            if (message == "RECEIVER_REGISTERED")
+            string message;
+            while ((message = await streamReader.ReadLineAsync()) != null)
             {
-                Console.WriteLine("Receiver is registered. Waiting for Sender to connect...");
+                Console.WriteLine($"Sender: {message}");
             }
-            streamReader.Close();
             writer.Close();
+            streamReader.Close();
             stream.Close();
             client.Close();
-            TcpClient senderClient = new TcpClient();
-            senderClient.Connect(serverIp, serverPort); // ใช้การเชื่อมต่อขาออกไปยังเซิร์ฟเวอร์
-            NetworkStream senderStream = senderClient.GetStream();
-            StreamReader reader = new StreamReader(senderStream);
-
-            while ((message = await reader.ReadLineAsync()) != null)
-            {
-                Console.WriteLine($"Received: {message}");
-            }
-
-            // ปิดการเชื่อมต่อ
-            reader.Close();
-            senderStream.Close();
-            senderClient.Close();
         }
         catch (Exception ex)
         {
