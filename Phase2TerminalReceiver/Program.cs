@@ -11,17 +11,24 @@ class Receiver
             StreamWriter writer = new StreamWriter(stream);
             StreamReader streamReader = new StreamReader(stream);
             writer.WriteLine("RECEIVER");
-            string ipAndPort = await streamReader.ReadLineAsync();
-            string split = ipAndPort.Split(":");
-            string ipSender = split[0];
-            int port = split[1];
             writer.Flush();
-            streamReader.Close();
-            stream.Close();
-            writer.Close();
-            client.Close();
-
-            Console.WriteLine("TEST");
+            string ipAndPort = await streamReader.ReadLineAsync();
+            var split = ipAndPort.Split(":");
+            string ipSender = split[0];
+            string port = split[1];
+            
+            TcpClient client2 = new TcpClient(ipSender,int.Parse(port));
+            NetworkStream stream2 = client2.GetStream();
+            StreamReader reader = new StreamReader(stream2);
+            string message;
+            while((message = await reader.ReadLineAsync()) != null)
+            {
+                Console.WriteLine(message);
+            }
+            Console.WriteLine("CLOSE");
+            client2.Close();
+            stream2.Close();
+            reader.Close();
         }catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
