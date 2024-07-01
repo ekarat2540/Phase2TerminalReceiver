@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Net;
+using System.Net.Sockets;
 
 class Receiver
 {
@@ -16,7 +17,10 @@ class Receiver
             var split = ipAndPort.Split(":");
             string ipSender = split[0];
             string port = split[1];
-            
+            streamReader.Close();
+            writer.Close();
+            stream.Close();
+            client.Close();
             TcpClient client2 = new TcpClient(ipSender,int.Parse(port));
             NetworkStream stream2 = client2.GetStream();
             StreamReader reader = new StreamReader(stream2);
