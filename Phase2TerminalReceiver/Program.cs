@@ -14,6 +14,7 @@ class Receiver
             stream.Close();
             writer.Close();
             client.Close();
+            Console.WriteLine("TEST");
         }catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
